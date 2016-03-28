@@ -1,4 +1,4 @@
-##!/usr/local/bin/bash
+#!/usr/local/bin/bash
 ######################################################################
 #
 # Script to backup video from cameras in Computer Science Department.
@@ -22,9 +22,9 @@
 ######################################################################
 
 video_dir=$1
-DATE=`date +%Y-%m-%d`
+DATE=$(date "+%Y-%m-%d")
 
-archivefile=video_archive.$DATE.tar
+archivefile=video_archive.${DATE}.tar
 
 # Delete all .jpg
 echo "Deleting all .jpg files in" $video_dir
