@@ -28,17 +28,17 @@ archivefile=video_archive.${DATE}.tar
 
 # Delete all .jpg
 echo "Deleting all .jpg files in" $video_dir
-find $video_dir -name '*.jpg' | xargs rm
+find $video_dir -iname \*.jpg -exec /bin/rm {} \;
 
 # Create Archive
 echo "Creating" $archivefile
 touch $video_dir/start.txt
-tar --create --preserve-permissions --file=$archivefile $video_dir/start.txt | xargs rm $video_dir/start.txt
+tar --create --preserve-permissions --file=$video_dir/$archivefile $video_dir/start.txt -exec /bin/rm $video_dir/start.txt
 
 # Append files to the archive
 echo "Adding video files to" $archivefile
-find $video_dir \( -iname "*.avi" -o -iname "*.mpg" \) -exec tar --remove-files $archivefile --append --file=$archivefile {} \;
+find $video_dir \( -iname "*.avi" -o -iname "*.mpg" \) -exec tar --remove-files $archivefile --append --file=$video_dir/$archivefile {} \;
 
 # Bzip2 the Tar File
 echo "Compressing" $archivefile "with Bzip2.  This will take some time."
-bzip2 $archivefile
+bzip2 $video_dir/$archivefile
