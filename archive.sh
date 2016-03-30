@@ -9,11 +9,10 @@
 
 # Steps
 # 0) Arguments
-# 1) Check for all files to be avi
-# 2) Delete non-avi
-# 3) Create Archvie File
-# 4) Add all avi to the Archive File
-# 5) Move Archive File
+# 1) Delete non-avi
+# 2) Create Archive File
+# 3) Add all files older than 90 days to Archive
+# 4) Remove all files archived
 
 ######################################################################
 #
@@ -28,17 +27,17 @@ archivefile=video_archive.${DATE}.tar
 
 # Delete all .jpg
 echo "Deleting all .jpg files in" $video_dir
-find $video_dir -iname \*.jpg -exec /bin/rm {} \;
+find $video_dir -name "*.jpg" -delete
 
 # Create Archive
 echo "Creating" $archivefile
 touch $video_dir/start.txt
-tar --create --preserve-permissions --file=$video_dir/$archivefile $video_dir/start.txt -exec /bin/rm $video_dir/start.txt
+tar -cf $video_dir/$archivefile $video_dir/start.txt && /bin/rm $video_dir/start.txt
 
 # Append files to the archive
 echo "Adding video files to" $archivefile
-find $video_dir \( -iname "*.avi" -o -iname "*.mpg" \) -exec tar --remove-files $archivefile --append --file=$video_dir/$archivefile {} \;
+find $video_dir -mtime +90 -exec /usr/bin/tar -rf $video_dir/$archivefile {} \; -exec /bin/rm {} \;
 
 # Bzip2 the Tar File
 echo "Compressing" $archivefile "with Bzip2.  This will take some time."
-bzip2 $video_dir/$archivefile
+bzip2 -9 $video_dir/$archivefile
