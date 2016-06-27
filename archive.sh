@@ -45,7 +45,7 @@ find $video_dir -name "*.jpg" -delete
 
 # Create Archive
 echo "Creating" $archivefile | tee -a $log_dir/$log_file
-touch $video_dir/start.txt 
+touch $video_dir/start.txt
 tar -cf $video_dir/$archivefile $video_dir/start.txt && /bin/rm $video_dir/start.txt
 
 # Append files to the archive
@@ -62,3 +62,4 @@ mv $video_dir/${archivefile}.bz2 $transfer_dir
 
 # Program end - Terminate Log File
 echo "Script completed" | tee -a $log_dir/$log_file
+
