@@ -4,6 +4,7 @@
 # Script to backup video from cameras in Computer Science Department.
 #
 # Written By: Kyle Ricks
+# Updated   : 20160908
 #
 ######################################################################
 
@@ -11,8 +12,9 @@
 # 0) Arguments
 # 1) Create Log File 
 # 2) Delete *.jpg files
-# 3) Create Archive File
-# 4) Add all files older than 90 days to Archive; then delete them inline
+# 3) Create Manifest of Archive Candidates
+# 3) Create Archive File from Archive Candidates file 
+# 4) Delete the Candidates
 # 5) Compress tar file with Bzip2
 # 6) Move completed *.bz2 to transfer directory
 
@@ -22,12 +24,13 @@
 #
 ######################################################################
 
-video_dir=storage
+video_dir=/storage
 log_dir=$video_dir/script_log
 transfer_dir=$video_dir/compressed_archives
 DATE=$(date "+%Y-%m-%d")
 archivefile=video_archive.${DATE}.tar
 log_file=${DATE}.log
+candidate_file=candidate_file_${DATE}.txt
 
 ######################################################################
 #
@@ -43,14 +46,17 @@ echo "Creating Log File" $log_file | tee -a $log_dir/$log_file
 echo "Deleting all .jpg files in" $video_dir | tee -a $log_dir/$log_file
 find $video_dir -name "*.jpg" -delete
 
-# Create Archive
-echo "Creating" $archivefile | tee -a $log_dir/$log_file
-touch $video_dir/start.txt
-tar -cf $video_dir/$archivefile $video_dir/start.txt && /bin/rm $video_dir/start.txt
+# Create File of Archive Candidates
+echo "Creating Archive Candidates File" | tee -a $log_dir/$log_file
+find $video_dir -type f -mtime +30 | tee -a $log_dir/$candidate_file
 
-# Append files to the archive
-echo "Adding video files to" $archivefile | tee -a $log_dir/$log_file
-find $video_dir -type f -mtime +90 -exec /usr/bin/tar -rf $video_dir/$archivefile {} \; -exec /bin/rm {} \;
+# Create Archive
+echo "Creating" $archivefile | tee -a $log_dir/$log_file 
+tar -cf $video_dir/$archivefile -T $log_dir/$candidate_file
+
+# Delete the candidates
+#echo "Deleting Candidates from" $candidate_file  | tee -a $log_dir/$log_file
+#xargs rm < $candidate_file
 
 # Bzip2 the Tar File
 echo "Compressing" $archivefile "with Bzip2.  This will take some time." | tee -a $log_dir/$log_file
@@ -62,4 +68,3 @@ mv $video_dir/${archivefile}.bz2 $transfer_dir
 
 # Program end - Terminate Log File
 echo "Script completed" | tee -a $log_dir/$log_file
-
