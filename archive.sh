@@ -48,6 +48,7 @@ find $video_dir -name "*.jpg" -delete
 
 # Create File of Archive Candidates
 echo "Creating Archive Candidates File" | tee -a $log_dir/$log_file
+touch $log_dir/$candidate_file
 find $video_dir -type f -mtime +30 | tee -a $log_dir/$candidate_file
 
 # Create Archive
@@ -55,8 +56,8 @@ echo "Creating" $archivefile | tee -a $log_dir/$log_file
 tar -cf $video_dir/$archivefile -T $log_dir/$candidate_file
 
 # Delete the candidates
-#echo "Deleting Candidates from" $candidate_file  | tee -a $log_dir/$log_file
-#xargs rm < $candidate_file
+echo "Deleting Candidates from" $candidate_file  | tee -a $log_dir/$log_file
+xargs rm < $candidate_file
 
 # Bzip2 the Tar File
 echo "Compressing" $archivefile "with Bzip2.  This will take some time." | tee -a $log_dir/$log_file
