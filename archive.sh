@@ -57,7 +57,7 @@ tar -cf $video_dir/$archivefile -T $log_dir/$candidate_file
 
 # Delete the candidates
 echo "Deleting Candidates from" $candidate_file  | tee -a $log_dir/$log_file
-xargs rm < $candidate_file
+xargs rm < $log_dir/$candidate_file
 
 # Bzip2 the Tar File
 echo "Compressing" $archivefile "with Bzip2.  This will take some time." | tee -a $log_dir/$log_file
