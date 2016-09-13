@@ -4,7 +4,7 @@
 # Script to backup video from cameras in Computer Science Department.
 #
 # Written By: Kyle Ricks
-# Updated   : 20160908
+# Updated   : 20160913
 #
 ######################################################################
 
