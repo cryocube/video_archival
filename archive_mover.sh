@@ -22,7 +22,7 @@
 
 destination=/export/dept/Support/video_archive
 archive_source=/storage/compressed_archives
-filetype=.txt
+extension=.bz2
 DATE=$(date "+%Y-%m-%d")
 log_dir=/export/dept/Support/video_archive/logs
 log_file=video_archive_download_${DATE}.log
@@ -42,8 +42,8 @@ echo "["$(date +%H:%M:%S)"] Video Archive Download beginning" $DATE | tee $log_d
 echo "["$(date +%H:%M:%S)"] Creating Log File" $log_file | tee -a $log_dir/$log_file
 
 #Move bzip2 files
-echo "["$(date +%H:%M:%S)"] SSHing to dvr server and downloading all" $filetype "files." | tee -a $log_dir/$log_file
-#scp -i $ssh_id -P $remote_port $remote_user@$remote_sys:$archive_source/*$filetype $destination | tee -a $log_dir/$log_file
+echo "["$(date +%H:%M:%S)"] SSHing to dvr server and downloading all" $extension "files." | tee -a $log_dir/$log_file
+scp -i $ssh_id -r -P $remote_port $remote_user@$remote_sys:$archive_source/\*$extension $destination | tee -a $log_dir/$log_file
 
 # Program end - Terminate Log File
 echo "["$(date +%H:%M:%S)"] Script completed" | tee -a $log_dir/$log_file
